@@ -131,8 +131,20 @@ footer.main {
 	border-bottom: none;
 	text-decoration: none;
 	text-shadow: 0 -1px 2px #222;
-	color: #f7f7f7
+	color: #999
 }
+#jPanelMenu-menu li a.sub {
+	padding-left: 51px;
+	font-weight: 300;
+}
+
+#jPanelMenu-menu li i {
+	font-weight: lighter;
+	position: relative;
+	top: -1px;
+	margin-right: 10px;
+}
+
 #jPanelMenu-menu li a:hover, #jPanelMenu-menu li a:focus {
 	background: #404040;
 	background: -o-linear-gradient(top, #484848, #383838);
