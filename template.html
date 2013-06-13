@@ -25,97 +25,25 @@
     <!-- Include the compiled Ratchet JS -->
     <script src="js/ratchet.js"></script>    
     
+    <!-- Include Nimbus JS -->
     <script src="js/nimbus.js"></script>
 
     <!-- Intro paragraph styles. Delete once you start using this page -->
-    <style type="text/css">
-        .welcome {
-          line-height: 1.5;
-          color: #555;
-        }
-        
-        #name {
-        	text-align: center;
-			color: #fff;
-			font-size: 3.5em;	
-        }
-        
-        #powered {
-			margin: 0px auto;
-			display: block;
-			width: 250px;
-			margin-top: 5px;        	
-        }
-        
-        .s_icon {
-			height: 18px;
-			margin-right: 7px;
-			display: inline;        	
-        }
-        
-        .slide_left .bar-title, .slide_left .content {
-        	-webkit-transform: translate(200px, 0px);
-        	border-left: 1px solid #0f1114;
-        }
-        
-        .content, .bar-title {
-        	transition: all 0.10s ease-in-out;
-        	-webkit-transition: all 0.10s ease-in-out;
-        	border-left: 1px solid #0f1114;
-        }
-        
-        .event-menu {
-			width: 100%;
-			background: #1b1e24;
-			position: relative;
-			top: 11px;
-			height: 0px;
-			/*opacity: 0;
-			-webkit-transition: opacity 0.5s ease-out; */
-			-webkit-transition: height 0.1s ease-out;
-			overflow: hidden;
-        }
-        
-        .active .event-menu {
-        	height: 32px;
-        	display: block;
-        	opacity: 1;
-        }
-        
-        .event-menu a {
-			width: 50%;
-			display: block;
-			margin: 0px;
-			float: right;
-			text-align: center;
-			color: #fff;
-			padding-top: 5px;
-			padding-bottom: 2px;
-        }
-        
-        .event-menu a:hover {
-        	background: #22262e;
-        	color: #ccc;
-        }
-    </style>
+    <link rel="stylesheet" href="intro.css">
 
-	<link rel="stylesheet" href="css/fontello.css">
-	
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-	
-	<link rel="stylesheet" href="css/jpanel.css">
-	
-	<script src="js/fastclick.js"></script>
-
-	<script src="login.js"></script>
-	
+    <link rel="stylesheet" href="css/fontello.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="css/jpanel.css">
+    <script src="js/fastclick.js"></script>
+    <script src="login.js"></script>
   </head>
   <body>
+    <script src="app.js"></script>
   
 	<nav id="jPanelMenu-menu" style="width: 250px; z-index: 1; display: block; height: 100%">
 		<ul>
 			<li><input id="filter_search" type="search" placeholder="Filter"></li>
-			<li><a onclick="window.log_out()"><i class="icon-logout" style="font-size: 16px;"></i>Logout</a></li>
+			<li><a id="log_out_button"><i class="icon-logout" style="font-size: 16px;"></i>Logout</a></li>
 			<li><a href="#usage"><i class="icon-arrows-ccw" style="font-size: 16px;"></i>Sync</a></li>
 			<!-- <li><a href="#inner-workings">Filter</a></li> -->
 		</ul>
@@ -123,7 +51,7 @@
   
   
 	<header class="bar-title">
-	  <a class="button menu-trigger" id="menu_button" onclick="window.toggle_slide()">
+	  <a class="button menu-trigger" id="menu_button">
 	    <i class="icon-menu" style="font-size: 25px;"></i> 
 	  </a>
 	  <h1 class="title">Template</h1>
@@ -140,7 +68,7 @@
 	<!-- modal for adding -->
 	<div id="addModal" class="modal">
 	  <header class="bar-title">
-		<a class="button" onclick="create_new_entry()" style="padding-top: 5px;">
+		<a class="button" id="create_entry_button" style="padding-top: 5px;">
 			<i class="icon-ok" style="font-size: 20px;"></i> 
 		</a>	  	
 	    <h1 class="title">Add Entry</h1>
@@ -151,7 +79,7 @@
 	  
 	  <div class="content">
 		<form style="height: 100%; overflow: hidden">
-		  <textarea id="writearea" onfocus="window.scrollTo(0, 0);" placeholder="Enter your entry here and hit check to save"></textarea>
+		  <textarea id="writearea" placeholder="Enter your entry here and hit check to save"></textarea>
 		</form>
 	  </div>
 	</div>
@@ -159,10 +87,10 @@
 	<!-- modal for editing -->
 	<div id="editModal" class="modal">
 	  <header class="bar-title">
-		<a class="button" onclick="save_entry()" style="padding-top: 5px;">
+		<a class="button" id="save_entry_button" style="padding-top: 5px;">
 			<i class="icon-ok" style="font-size: 20px;"></i> 
 		</a>
-		<a class="button" onclick="delete_entry()" style="padding-top: 5px;">
+		<a class="button" id="delete_entry_button" style="padding-top: 5px;">
 			<i class="icon-trash" style="font-size: 17px;"></i> 
 		</a>			  	
 	    <h1 class="title">Edit Entry</h1>
@@ -190,15 +118,14 @@
 	  	</div>
 	  	
 	    <div class="content-padded" style="position: absolute; bottom: 0px; width: 94%; padding: 3%;">
-	    	<a class="button-block" style="padding-top: 14px;" onclick="Nimbus.Auth.authorize('Dropbox')"><img class="s_icon" src="images/dropbox_icon.png" />Login with Dropbox</a>
-			<a class="button-block" style="padding-top: 14px;" onclick="Nimbus.Auth.authorize('GDrive')"><img class="s_icon" src="images/google_drive_icon.png" />Login with Google Drive</a>
+	      <a class="button-block" style="padding-top: 14px;" id="Dropbox_authorize_button"><img class="s_icon" src="images/dropbox_icon.png" />Login with Dropbox</a>
+              <a class="button-block" style="padding-top: 14px;" id="GDrive_authorize_button"><img class="s_icon" src="images/google_drive_icon.png" />Login with Google Drive</a>
 	    </div>
 	
 	
 	  </div>
 		
 	</div>
-
 
   </body>
 </html>
